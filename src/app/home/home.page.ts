@@ -47,7 +47,7 @@ export class HomePage implements OnInit {
     //to the key and value arrays when the component is initialized
     //Saves database to localStorage, checks to see if enabled first
 
-    if (this.checkLocal) { //Check if localStorage is enabled
+    //if (this.checkLocal) { //Check if localStorage is enabled
       if (localStorage.getItem('data') == null) { //This code executes if localStorage is enabled and data does not exist
         this.firebaseservice.getDataSnapshot()
           .then((a) => {
@@ -126,16 +126,16 @@ selectedAnt(key){
 
   //Author: Jeremy Stiff jstiff@ggc.edu
   //Function to check if localStorage is enabled on user browser
-  private checkLocal(): boolean {
-    try {
-      const key = '__testing key to determine if localstorage is enabled__';
-      localStorage.setItem(key, key);
-      localStorage.removeItem(key);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
+//   private checkLocal(): boolean {
+//     try {
+//       const key = '__testing key to determine if localstorage is enabled__';
+//       localStorage.setItem(key, key);
+//       localStorage.removeItem(key);
+//     } catch (e) {
+//       return false;
+//     }
+//     return true;
+//   }
 
   //Author: Jeremy Stiff jstiff@ggc.edu
   // -1 resistant, 0 intermediate, 1 susceptable
