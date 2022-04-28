@@ -47,7 +47,7 @@ export class HomePage implements OnInit {
     //to the key and value arrays when the component is initialized
     //Saves database to localStorage, checks to see if enabled first
 
-    if (this.checkLocal) { //Check if localStorage is enabled
+    //if (this.checkLocal) { //Check if localStorage is enabled
       if (localStorage.getItem('data') == null) { //This code executes if localStorage is enabled and data does not exist
         this.firebaseservice.getDataSnapshot()
           .then((a) => {
@@ -242,4 +242,3 @@ selectedAnt(key){
   //antibiotic input. Based on each bacterium's mean middle value aagainst every antibiotic
 
 }
-
