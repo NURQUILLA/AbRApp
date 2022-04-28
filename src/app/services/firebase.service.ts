@@ -1,14 +1,11 @@
-/*
-  FOR FUTURE TEAMS: 
-  1) Move the database to FireStore and change the data retreival and storage to a SUBSCRIPTION based method
-  2) Record all the unique bacterium into a seperate array for the purpose of creating a feature that would allow a bacterium to be selected first
-     and only present the antibiotics that have those bacterium as data in the antibiotic list
-*/
-
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, DataSnapshot, child, get } from 'firebase/database';
+import { getDatabase, ref, set, get, child, DataSnapshot } from 'firebase/database';
+import { Antibiotic } from 'src/app/shared/Antibiotic';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { AngularFireList } from '@angular/fire/compat/database';
+import { AngularFireObject } from '@angular/fire/compat/database';
 
 const app = initializeApp(environment.firebase);
 const database = getDatabase(app);
@@ -18,76 +15,46 @@ const dbRef = ref(database);
   providedIn: 'root',
 })
 export class FirebaseService {
-  constructor() { }
+  antibioticListRef: AngularFireList<any>;
+  antibioticRef: AngularFireObject<any>;
 
-  //Author: Jeremy Stiff jstiff@ggc.edu
-  //Returns a promise that can be interacted with via .then()
-  //The promise contains the DataSnapshot which holds the keys and values of the database
-  //These can be extracted from the DataSnapshot as arrays via the Object.keys() and Object.values() methods
+  constructor(private db: AngularFireDatabase) {}
+
   async getDataSnapshot(): Promise<DataSnapshot> {
     try {
-      var key_array = await get(child(dbRef, '/'));
-      return key_array.val();
+      const keyArray = await get(child(dbRef, '/'));
+      return keyArray.val();
     } catch (error) {
-      console.log("Error while awaiting data snapshot.");
+      console.log('Error while awaiting data snapshot.');
       console.log(error);
     }
   }
 
-  //Author: Jeremy Stiff jstiff@ggc.edu
-  //DEPRECIATED CODE
-  //getData(): DataSnapshot[] {
-  //  var item_array: DataSnapshot[] = [];
-  //  get(child(dbRef, '/')).then((snapshot) => {
-  //    if (snapshot.exists()) {
-  //      snapshot.forEach((item) => {
-  //        item_array.push(item);
-  //      });
-  //    } else {
-  //      console.log('No data avaliable');
-  //    }
-  //  }).catch((error) => {
-  //    console.error(error);
-  //  });
-  //  return item_array;
-  //}
+  getAntibioticList(){
+    this.antibioticListRef = this.db.list('/');
+    return this.antibioticListRef;
+  }
 
-  //Author: Jeremy Stiff jstiff@ggc.edu
-  //DEPRECIATED CODE
-  //getKeys(): any {
-  //  var key_array = get(child(dbRef, '/')).then((snapshot) => {
-  //    var temparray = [];
-  //    if (snapshot.exists()) {
-  //      for (var x in snapshot.val()) {
-  //        temparray.push(x);
-  //      }
-  //    } else {
-  //      console.log('No data avaliable');
-  //    }
-  //    return temparray;
-  //  })
-  //    .catch((error) => {
-  //      console.error(error);
-  //    });
-  //  return key_array
-  //}
+  deleteAntibiotic(name: string){
+    this.antibioticRef = this.db.object('/' + child(dbRef, '/'));
+    this.antibioticRef.remove();
+  }
 
-  //Author: Jeremy Stiff jstiff@ggc.edu
-  //DEPRECIATED CODE
-  //getVals(): any[] {
-  //  var val_array: any[] = []
-  //  get(child(dbRef, '/')).then((snapshot) => {
-  //    if (snapshot.exists()) {
-  //      for (var x in snapshot.val()) {
-  //        val_array.push(snapshot.val()[x]);
-  //      }
-  //      return val_array;
-  //    } else {
-  //      console.log('No data avaliable');
-  //    }
-  //  }).catch((error) => {
-  //    console.error(error);
-  //  });
-  //  return val_array;
-  //}
+  getAntibiotic(){
+    this.antibioticRef = this.db.object('/' + child(dbRef, '/'));
+    return this.antibioticRef;
+  }
+
+  async updateAntibiotic(ant: Antibiotic){
+    return this.antibioticRef.update({
+      antibiotic: '',
+      bacterium: '',
+      zone: '',
+    });
+  }
+
+  async delAntibiotic(key){
+    this.db.object('/' + key).remove();
+  }
+
 }

@@ -1,20 +1,46 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Antibiotic Resistance Check</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
-</ion-content>
+<!-- <ion-item>
+  <ionic-selectable >
+    Select Antibiotic
+  </ionic-selectable>
+</ion-item> -->
+<!-- <ion-searchbar placeholder="Search Antibiotics" animated (ionChange)="search( $event )"> </ion-searchbar> -->
+
+<ion-item>
+        <ion-select [(ngModel)]="selectedAntibiotic" (ngModelChange)="onChangeAntibiotic()"
+            placeholder="Select Antibiotic">
+            <ion-select-option *ngFor="let item of workabAlerray | filter: textSearch: 'antibiotic'" [value]="item">{{item.antibiotic}}
+            </ion-select-option>
+        </ion-select>
+</ion-item>
+
+
+    <ion-item *ngIf="selectedAntibiotic !== undefined">
+        <ion-label>Bacterium</ion-label>
+        <ion-select [(ngModel)]="selectedAacterium" (ngModelChange)="onChangeBacterium()"
+            placeholder="Select Bacterium">
+            <ion-select-option *ngFor="let item of selectedAntibiotic.bacterium | keyvalue" [value]="item.key">
+                {{item.key}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+
+<ion-item *ngIf="selectedAacterium !== undefined ">
+    <ion-label>User Input</ion-label>
+    <ion-input placeholder="Test result" [(ngModel)]="userAnput"></ion-input>
+</ion-item>
+
+<h1 *ngIf="resistance !== undefined" class="ion-text-center">Result: {{resistance}}</h1>
+
+<div align="center">
+    <ion-button color="success" (click)="onClick()">Submit</ion-button>
+    <ion-button color="danger" (click)="reset()">Reset</ion-button>
+</div>
